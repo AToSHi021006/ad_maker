@@ -62,6 +62,9 @@ export default function Checkout() {
   };
   const handleNext = () => {
     setActiveStep(activeStep + 1);
+
+    if(activeStep === 0)
+      console.log("camplaings");
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -142,7 +145,7 @@ export default function Checkout() {
                 >
                   {steps.map((label) => (
                     <Step
-                      sx={{ ':first-child': { pl: 0 }, ':last-child': { pr: 0 } }}
+                      sx={{ ':first-of-type': { pl: 0 }, ':last-child': { pr: 0 } }}
                       key={label}
                     >
                       <StepLabel>{label}</StepLabel>
@@ -170,7 +173,7 @@ export default function Checkout() {
                 {steps.map((label) => (
                   <Step
                     sx={{
-                      ':first-child': { pl: 0 },
+                      ':first-of-type': { pl: 0 },
                       ':last-child': { pr: 0 },
                       '& .MuiStepConnector-root': { top: { xs: 6, sm: 12 } },
                     }}
