@@ -13,7 +13,10 @@ const FormGrid = styled(Grid)(() => ({
   flexDirection: 'column',
 }));
 
-export default function AdSets() {
+export default function AdSets({ AdSetnName,setAdSetnName }) {
+  const handleInputChange = (event) => {
+    setAdSetnName(event.target.value);
+  };
 
   return (
     <Grid container spacing={3} sx={{ height: { xs: '100%' } }}>
@@ -22,13 +25,15 @@ export default function AdSets() {
         Name
       </FormLabel>
       <OutlinedInput
-        id="campaign-name"
-        name="campaign-name"
+        id="adset-name"
+        name="adset-name"
         type="name"
         placeholder="Name this ad set"
-        autoComplete="campaign name"
+        autoComplete="adset name"
         required
         size="small"
+        value={AdSetnName} // Bind the input value to state
+        onChange={handleInputChange} // Upadate state on input change
       />
     </FormGrid>
     <FormControl>

@@ -17,29 +17,56 @@ import AdSets from './components/AdSets';
 import Ads from './components/Ads';
 import SitemarkIcon from './components/SitemarkIcon';
 import TemplateFrame from './TemplateFrame';
+import axios from 'axios'
 
-const steps = ['Campaigns', 'Ad sets', 'Ads'];
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <Campaigns />;
-    case 1:
-      return <AdSets />;
-    case 2:
-      return <Ads />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+// axios.defaults.baseURL = baseUrl
+axios.defaults.baseURL = baseUrl;
+
 export default function Checkout() {
   const [mode, setMode] = React.useState('light');
   const [showCustomTheme, setShowCustomTheme] = React.useState(true);
   const checkoutTheme = createTheme(getCheckoutTheme(mode));
   const defaultTheme = createTheme({ palette: { mode } });
   const [activeStep, setActiveStep] = React.useState(0);
+  const [CampaignName, setCampaignName] = React.useState('');
+
+  const steps = ['Campaigns', 'Ad sets', 'Ads'];
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <Campaigns 
+          CampaignName = {CampaignName}
+          setCampaignName = {setCampaignName}
+        />;
+      case 1:
+        return <AdSets />;
+      case 2:
+        return <Ads />;
+      default:
+        throw new Error('Unknown step');
+    }
+  }
+
+  const handleCampaignNameSubmit = async (event) => {
+    setCampaignName(CampaignName)
+    console.log("CampaignName:", CampaignName); 
+
+    try {
+      await axios.post("http://127.0.0.1:8000/ad/campaign/", CampaignName, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      console.error('Error posting data:', error);
+      }
+  }
+
   // This code only runs on the client side, to determine the system color preference
   React.useEffect(() => {
     // Check if there is a preferred mode in localStorage
+
     const savedMode = localStorage.getItem('themeMode');
     if (savedMode) {
       setMode(savedMode);
@@ -64,7 +91,7 @@ export default function Checkout() {
     setActiveStep(activeStep + 1);
 
     if(activeStep === 0)
-      console.log("camplaings");
+     handleCampaignNameSubmit()
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
