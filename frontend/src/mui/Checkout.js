@@ -18,6 +18,7 @@ import Ads from './components/Ads';
 import SitemarkIcon from './components/SitemarkIcon';
 import TemplateFrame from './TemplateFrame';
 import axios from 'axios'
+import { useState } from 'react'
 
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 // axios.defaults.baseURL = baseUrl
@@ -29,39 +30,48 @@ export default function Checkout() {
   const checkoutTheme = createTheme(getCheckoutTheme(mode));
   const defaultTheme = createTheme({ palette: { mode } });
   const [activeStep, setActiveStep] = React.useState(0);
-  const [CampaignName, setCampaignName] = React.useState('');
+
+  const [formData, setFormData] = useState({
+    campaign: {},
+    adset: {},
+    ad: {}
+  });
+
+  const updateSectionData = (section, data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [section]: data
+    }));
+  };
 
   const steps = ['Campaigns', 'Ad sets', 'Ads'];
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <Campaigns 
-          CampaignName = {CampaignName}
-          setCampaignName = {setCampaignName}
-        />;
+        return <Campaigns campaignData={formData.campaign} updateData={(data) => updateSectionData("campaign", data)} />;
       case 1:
-        return <AdSets />;
+        return <AdSets adsetData={formData.adset} updateData={(data) => updateSectionData("adset", data)} />;
       case 2:
-        return <Ads />;
+        return <Ads adData={formData.ad} updateData={(data) => updateSectionData("ad", data)} />;
       default:
-        throw new Error('Unknown step');
+        throw new Error("Unknown step");
     }
-  }
+  };
 
-  const handleCampaignNameSubmit = async (event) => {
-    setCampaignName(CampaignName)
-    console.log("CampaignName:", CampaignName); 
+  // const handleCampaignNameSubmit = async (event) => {
+  //   setCampaignName(CampaignName)
+  //   console.log("CampaignName:", CampaignName); 
 
-    try {
-      await axios.post("http://127.0.0.1:8000/ad/campaign/", CampaignName, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    } catch (error) {
-      console.error('Error posting data:', error);
-      }
-  }
+  //   try {
+  //     await axios.post("http://127.0.0.1:8000/ad/campaign/", CampaignName, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.error('Error posting data:', error);
+  //     }
+  // }
 
   // This code only runs on the client side, to determine the system color preference
   React.useEffect(() => {
@@ -91,7 +101,11 @@ export default function Checkout() {
     setActiveStep(activeStep + 1);
 
     if(activeStep === 0)
-     handleCampaignNameSubmit()
+    //  handleCampaignNameSubmit()
+      console.log(formData.campaign)
+
+    // if(activeStep === 1)
+    //   console.log(formData.adset.gender, formData.adset.age)
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
