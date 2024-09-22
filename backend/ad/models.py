@@ -1,7 +1,8 @@
 from django.db import models
 
-class Campaign(models.Model):
-    campaign_name = models.CharField(max_length=1000)
+class ad(models.Model):
+    campaignName = models.CharField(max_length=255)
+    adsetName = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.campaign_name
+    image = models.ImageField(upload_to='assets/images/', null=True, blank=True)
+    video = models.FileField(upload_to='assets/videos/', null=True, blank=True)

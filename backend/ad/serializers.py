@@ -1,7 +1,7 @@
-from .models import Campaign
+from .models import ad
 from rest_framework import serializers
 
-class CampaignSerializer(serializers.ModelSerializer):
+class AdSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Campaign
-        fields = ['campaign_name']
+        model = ad
+        fields = '__all__'  # Adjust as necessary

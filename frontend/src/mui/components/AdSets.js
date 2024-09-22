@@ -38,20 +38,20 @@ export default function AdSets({ adsetData,updateData  }) {
     setLocalData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (category, value) => {
+  const handleCheckboxChange = (category, index) => {
     setLocalData((prev) => {
-      const currentValues = prev[category] || []; // Ensure currentValues is an array
-      if (currentValues.includes(value)) {
-        // Remove the value if it's already selected
+      const currentIndexes = prev[category] || []; // Ensure currentIndexes is an array
+      if (currentIndexes.includes(index)) {
+        // Remove the index if it's already selected
         return {
           ...prev,
-          [category]: currentValues.filter((v) => v !== value),
+          [category]: currentIndexes.filter((i) => i !== index),
         };
       } else {
-        // Add the value if it's not already selected
+        // Add the index if it's not already selected
         return {
           ...prev,
-          [category]: [...currentValues, value],
+          [category]: [...currentIndexes, index],
         };
       }
     });
@@ -83,13 +83,13 @@ export default function AdSets({ adsetData,updateData  }) {
         name="row-radio-buttons-group"
         defaultValue="unlimited"
       >
-        {["unlimited", "male", "female"].map((value) => (
+        {["unlimited", "male", "female"].map((value, index) => (
           <FormControlLabel
             key={value}
             control={
               <Checkbox
-                checked={localData.gender ? localData.gender.includes(value) : false}
-                onChange={() => handleCheckboxChange("gender", value)}
+                checked={localData.gender ? localData.gender.includes(index) : false}
+                onChange={() => handleCheckboxChange("gender", index)}
               />
             }
             label={value.charAt(0).toUpperCase() + value.slice(1)} // Capitalize the label
@@ -105,13 +105,13 @@ export default function AdSets({ adsetData,updateData  }) {
         name="row-radio-buttons-group"
         defaultValue="unlimited"
       >
-        {["unlimited", "18-30", "31-44", "45-64", "65+"].map((value) => (
+        {["unlimited", "18-30", "31-44", "45-64", "65+"].map((value, index) => (
           <FormControlLabel
             key={value}
             control={
               <Checkbox
-                checked={localData.age ? localData.age.includes(value) : false}
-                onChange={() => handleCheckboxChange("age", value)}
+                checked={localData.age ? localData.age.includes(index) : false}
+                onChange={() => handleCheckboxChange("age", index)}
               />
             }
             label={value}
