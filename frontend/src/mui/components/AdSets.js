@@ -78,7 +78,7 @@ export default function AdSets({ adsetData,updateData  }) {
     <FormControl>
       <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
       <div
-        row
+        // row
         aria-labelledby="demo-row-radio-buttons-group-label"
         name="row-radio-buttons-group"
         defaultValue="unlimited"
@@ -100,7 +100,7 @@ export default function AdSets({ adsetData,updateData  }) {
     <FormControl>
       <FormLabel id="demo-row-radio-buttons-group-label">Age</FormLabel>
       <div
-        row
+        // row
         aria-labelledby="demo-row-radio-buttons-group-label"
         name="row-radio-buttons-group"
         defaultValue="unlimited"

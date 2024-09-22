@@ -58,20 +58,19 @@ export default function Checkout() {
     }
   };
 
-  // const handleCampaignNameSubmit = async (event) => {
-  //   setCampaignName(CampaignName)
-  //   console.log("CampaignName:", CampaignName); 
+  const submmitFormData = async (event) => {
 
-  //   try {
-  //     await axios.post("http://127.0.0.1:8000/ad/campaign/", CampaignName, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Error posting data:', error);
-  //     }
-  // }
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/ad/", formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
+  }
 
   // This code only runs on the client side, to determine the system color preference
   React.useEffect(() => {
@@ -100,12 +99,8 @@ export default function Checkout() {
   const handleNext = () => {
     setActiveStep(activeStep + 1);
 
-    if(activeStep === 0)
-    //  handleCampaignNameSubmit()
-      console.log(formData.campaign)
-
-    // if(activeStep === 1)
-    //   console.log(formData.adset.gender, formData.adset.age)
+    if(activeStep === 2)
+      submmitFormData()
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
