@@ -119,7 +119,7 @@ export default function AdSets({ adsetData,updateData  }) {
         ))}
       </div>
     </FormControl>
-    <FormGrid size={{ xs: 12, md: 4 }}>
+    {/* <FormGrid size={{ xs: 12, md: 4 }}>
       <FormLabel htmlFor="dailyBudget" required>
         Daily budget
       </FormLabel>
@@ -166,7 +166,7 @@ export default function AdSets({ adsetData,updateData  }) {
         value={localData.frequencyCap || ""} // Bind the input value to state
         onChange={handleChange} // Upadate state on input change
       />
-    </FormGrid>
+    </FormGrid> */}
   </Grid>
   );
 }

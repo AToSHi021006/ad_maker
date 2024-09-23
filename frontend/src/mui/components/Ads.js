@@ -104,8 +104,95 @@ export default function Ads({ adData, updateData }) {
           onChange={handleChange}
         />
       </FormGrid>
-      <FormControl>
+      {/* <FormControl>
         <FormLabel id="demo-row-radio-buttons-group-label">Type</FormLabel>
+        <TextField 
+          fullWidth 
+          label="Title (Max of 90 characters)" 
+          id="titleS"
+          name="titleS"
+          multiline
+          rows={3}
+          variant="standard" 
+          value={localData.titleS || ""}
+          onChange={handleChange}
+        />
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+          style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '10px'}}
+        >
+          Image/GIF (Max size 5M)
+          <VisuallyHiddenInput
+            type="file"
+            onChange={(event) => handleFileChange(event, 'imageS')}
+            multiple
+          />
+        </Button>
+        <TextField 
+          fullWidth label="Description (Max of 90 characters)" 
+          id="descS"
+          name="descS"
+          multiline
+          rows={3}
+          variant="standard" 
+          value={localData.descS || ""}
+          onChange={handleChange}
+        />
+          <FormGrid size={{ xs: 12}} sx={{ marginTop: '20px' }}>
+            <FormLabel htmlFor="textS" required>
+              Text on button
+            </FormLabel>
+            <OutlinedInput
+              id="textS"
+              name="textS"
+              type="name"
+              placeholder=""
+              autoComplete="text"
+              required
+              size="small"
+              value={localData.textS || ""}
+              onChange={handleChange}
+            />
+          </FormGrid> 
+            <TextField 
+              fullWidth label="Brand name (Max of 25 characters)" 
+              id="brandS"
+              name='brandS'
+              multiline
+              rows={3}
+              variant="standard" 
+              value={localData.brandS || ""}
+              onChange={handleChange}
+            />
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '10px'}}
+          >
+            Logo (Max size 5M, 40*40)
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(event) => handleFileChange(event, 'logoS')}
+              multiple
+            />
+          </Button>
+            <TextField 
+              fullWidth label="Landing page URL (Make sure it works)" 
+              id="urlS"
+              name="urlS"
+              multiline
+              rows={3}
+              variant="standard" 
+              value={localData.urlS || ""}
+              onChange={handleChange}
+            />
         <RadioGroup
           value={value}
           onChange={handleRadioChange}
@@ -358,7 +445,7 @@ export default function Ads({ adData, updateData }) {
                 onChange={handleChange}
               />
           </CustomComponentPanel>
-      </FormControl>
+      </FormControl> */}
   </Grid>
   );
 }

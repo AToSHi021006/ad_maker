@@ -18,9 +18,9 @@ order = {}
 
 @api_view(['POST'])
 def Ad(request):
+    global order
     response_data = request.data
     order = response_data
-    print(order['campaign'].get('campaignName', None))
     print(response_data)
     start()
     return Response(response_data)
@@ -28,16 +28,6 @@ def Ad(request):
 gender_flag = -1
 age_flag = 0
 driver = None
-
-
-# chrome_options = webdriver.ChromeOptions()
-# chrome_options.add_argument("--lang=en")
-# # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options) 
-# chrome_install = ChromeDriverManager().install()
-
-# folder = os.path.dirname(chrome_install)
-# chromedriver_path = os.path.join(folder, "chromedriver.exe")
-# driver = webdriver.Chrome(service = Service(chromedriver_path), options=chrome_options) 
 
 def checkNum(num):
     return str(num).zfill(2)
@@ -59,7 +49,8 @@ def CreateCampaign(num):
     Create_Campaigns[0].click()
 
     campaign_name_input = driver.find_element(By.ID, "name")
-    campaign_name_str = order['campaign'].get('campaignName', None) + checkNum(num+1)
+    campaign_name = order.get('campaign', {}).get('campaignName', 'Default Campaign Name')
+    campaign_name_str = campaign_name + checkNum(num + 1)
     campaign_name_input.send_keys(campaign_name_str)
 
     Save_next = WebDriverWait(driver, 10).until(
@@ -67,7 +58,7 @@ def CreateCampaign(num):
     )
     Save_next[2].click()
 
-def CreateAdset(num):
+def CreateAdset(num, g, a):
     global gender_flag
 
    
@@ -77,11 +68,12 @@ def CreateAdset(num):
                 EC.visibility_of_element_located((By.ID, "name"))
             )
             time.sleep(2)
-            ad_set_name_str = "abibi_adset_" + checkNum(num+1)
+            ad_set_name = order.get('adset', {}).get('adsetName', 'Default Campaign Name')
+            ad_set_name_str = ad_set_name + checkNum(num+1)
 
-            ad_set_name_input.send_keys(" ") 
-            ad_set_name_input.send_keys(Keys.BACKSPACE)  
-            time.sleep(1)
+            # ad_set_name_input.send_keys(" ") 
+            # ad_set_name_input.send_keys(Keys.BACKSPACE)  
+            # time.sleep(1)
             ad_set_name_input.send_keys(ad_set_name_str)
             break
 
@@ -93,16 +85,18 @@ def CreateAdset(num):
             break    
     time.sleep(2)
     Gender_label_element = driver.find_elements(By.CSS_SELECTOR, "label.ant-checkbox-wrapper")
-    if num % 5 == 0:
-        gender_flag += 1
     driver.execute_script("arguments[0].scrollIntoView(true);", Gender_label_element[10])
     time.sleep(1)
-    if 10 != (10 + gender_flag):
+    gender = order.get('adset', {}).get('gender', None)
+    gender_flag = gender[g]
+    if gender_flag != 0:
         Gender_label_element[10 + gender_flag].click()
 
     Age_label_element = driver.find_elements(By.CSS_SELECTOR, "label.ant-checkbox-wrapper")
-    if num != 0:
-        Age_label_element[13 + num%5].click()
+    age = order.get('adset', {}).get('age', None)
+    age_flag = age[a]
+    if age_flag != 0:
+        Age_label_element[13 + age_flag].click()
 
     now_data_input = driver.find_element(By.ID, "startTime")
     driver.execute_script("arguments[0].scrollIntoView(true);", now_data_input)
@@ -115,7 +109,8 @@ def CreateAdset(num):
     Daily_budge_input = driver.find_element(By.ID, "budget")
     driver.execute_script("arguments[0].scrollIntoView(true);", Daily_budge_input)
     time.sleep(1)
-    Daily_budge_input.send_keys(settings['dailyBudget'])
+    Daily_budge = order.get('adset', {}).get('dailyBudget', '100')
+    Daily_budge_input.send_keys(Daily_budge)
 
     Bid_type_radio = driver.find_elements(By.CLASS_NAME, "ant-radio-input")
     Bid_type_radio[6].click()
@@ -123,7 +118,8 @@ def CreateAdset(num):
     Bid_rate_input = driver.find_element(By.ID, "bidRate")
     driver.execute_script("arguments[0].scrollIntoView(true);", Bid_rate_input)
     time.sleep(1)
-    Bid_rate_input.send_keys(settings['bid_Rate'])
+    Bit_rate = order.get('adset', {}).get('bidRate', '100')
+    Bid_rate_input.send_keys(Bit_rate)
 
     Delivery_rate_radio = driver.find_elements(By.CLASS_NAME, "ant-radio-input")
     Delivery_rate_radio[11].click()
@@ -137,12 +133,13 @@ def CreateAdset(num):
     Frequency_cap_input_1[2].send_keys("1")
 
     Frequency_cap_input_2 = driver.find_elements(By.CLASS_NAME, "ant-select-selection-search-input")
-    Frequency_cap_input_2[3].click()
-    Day_option_div = driver.find_elements(By.CSS_SELECTOR, "div.ant-select-item-option-content")
+    Frequency_cap_input_2[6].click()
+    # Day_option_div = driver.find_elements(By.CSS_SELECTOR, "div.ant-select-item-option-content")
+    Day_option_div = driver.find_elements(By.CLASS_NAME, "ant-select-item-option-content")
     Day_option_div[0].click()
 
     Save_next_ad_btn = driver.find_elements(By.CLASS_NAME, "ant-btn-primary")
-    Save_next_ad_btn[3].click()
+    Save_next_ad_btn[4].click()
 
     time.sleep(5)
     Proceed_btn = driver.find_elements(By.CLASS_NAME, "ant-btn-default")
@@ -155,11 +152,12 @@ def CreateAd(num):
                 EC.visibility_of_element_located((By.ID, "name"))
             )
             time.sleep(2)
-            ad_name_str = "abibi_ad_" + checkNum(num+1)
+            ad_name = order.get('ad', {}).get('adName', 'Default Ad Name')
+            ad_name_str = ad_name + checkNum(num+1)
 
-            ad_name_input.send_keys(" ") 
-            ad_name_input.send_keys(Keys.BACKSPACE)  
-            time.sleep(1)
+            # ad_name_input.send_keys(" ") 
+            # ad_name_input.send_keys(Keys.BACKSPACE)  
+            # time.sleep(1)
             ad_name_input.send_keys(ad_name_str)
             break
 
@@ -170,62 +168,94 @@ def CreateAd(num):
             print(f"Error in CreateAdset: {e}")
             break  
     time.sleep(2)
-    Title_textarea = driver.find_elements(By.CSS_SELECTOR, "textarea.ant-input")
+    brand_name_textarea = driver.find_elements(By.CSS_SELECTOR, "textarea.ant-input")
     time.sleep(2)
-    driver.execute_script("arguments[0].scrollIntoView(true);", Title_textarea[0])
-    Title_textarea[0].send_keys("They Tried to Ban This Wrinkle Fix")
+    driver.execute_script("arguments[0].scrollIntoView(true);", brand_name_textarea[0])
+    brand_name_textarea[0].send_keys("Your Skin Report")
+    time.sleep(5)
 
-    Image_upload_input = driver.find_element(By.ID, "creative_assetUrl")
-    driver.execute_script("arguments[0].scrollIntoView(true);", Image_upload_input)
+    Logo_upload_input = driver.find_element(By.ID, "creative_logoUrl")
+    driver.execute_script("arguments[0].scrollIntoView(true);", Logo_upload_input)
     time.sleep(2)
-    Image_upload_input.click()
+    Logo_upload_input.click()
 
     time.sleep(2)
     app = Application().connect(title_re="Open")
     dialog = app.window(title_re="Open")
-    file_path = os.path.abspath("./assets/image/1.jpg")
+    file_path = os.path.abspath("assets/logo/1.png")
     dialog.Edit.set_text(file_path)
     dialog.Open.click()
 
+    # time.sleep(2)
+    # Upload_without_crop_btn = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-default")
+    # time.sleep(5)
+    # driver.execute_script("arguments[0].scrollIntoView(true);", Upload_without_crop_btn[5])
+    # time.sleep(5)
+    # Upload_without_crop_btn[5].click()
+
+    time.sleep(3)
+    LandingPage_Url_input = driver.find_element(By.ID, "creative_clickThroughUrl")
+    LandingPage_Url_input.send_keys("https://t.cerial.org/663fe16475c8a80001d7a66e?sub1=__CAMPAIGN_ID__&sub2=__CAMPAIGN_NAME__&sub3=__FLIGHT_ID__&sub4=__FLIGHT_NAME__&sub5=__CREATIVE_ID__&sub6=__CREATIVE_NAME__&sub7=__OS__&sub8=__IS_LAT__&ref_id=__CALLBACK_PARAM__")
+
     time.sleep(2)
-    Upload_without_crop_btn = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-default")
-    time.sleep(5)
-    driver.execute_script("arguments[0].scrollIntoView(true);", Upload_without_crop_btn[5])
-    time.sleep(5)
-    Upload_without_crop_btn[5].click()
+    title_textarea = driver.find_elements(By.CSS_SELECTOR, "textarea.ant-input")
+    title_textarea[2].send_keys("They Tried to Ban This Wrinkle Fix")
 
     time.sleep(2)
     Description_textarea = driver.find_elements(By.CSS_SELECTOR, "textarea.ant-input")
     driver.execute_script("arguments[0].scrollIntoView(true);", Description_textarea[1])
-    Description_textarea[1].send_keys("Big Skincare doesn't want you to see See the (controversial) truth about anti-aging and…")
+    Description_textarea[3].send_keys("Big Skincare doesn't want you to see See the (controversial) truth about anti-aging and…")
 
     Text_on_btn = driver.find_element(By.ID, "creative_callToAction")
+    driver.execute_script("arguments[0].scrollIntoView(true);", Text_on_btn)
     Text_on_btn.click()
     time.sleep(2)
     Customized_text = driver.find_elements(By.CSS_SELECTOR, "input.flex-1")
     Customized_text[0].send_keys("Watch Now")
     time.sleep(2)
     Ok_btn = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-link")
-    Ok_btn[4].click()
+    Ok_btn[0].click()
     time.sleep(2)
     Watch_now_option = driver.find_elements(By.CSS_SELECTOR, "div.ant-select-item-option-content")
     Watch_now_option[0].click()
 
-    Brand_name_textarea = driver.find_elements(By.CSS_SELECTOR, "textarea.ant-input")
-    Brand_name_textarea[2].send_keys("Your Skin Report")
+    time.sleep(2)
+    image_upload_btn1 = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-default")
+    image_upload_btn1[7].click()
+    time.sleep(2)
 
-    Logo_upload_div = driver.find_element(By.ID, "creative_logoUrl")
-    Logo_upload_div.click()
+    image_upload_btn2 = driver.find_elements(By.CSS_SELECTOR, "span.ant-upload")
+    image_upload_btn2[1].click()
 
     time.sleep(2)
     app = Application().connect(title_re="Open")
     dialog = app.window(title_re="Open")
-    file_path = os.path.abspath("./assets/logo/1.png")
+    file_path = os.path.abspath("assets/image/1.jpg")
     dialog.Edit.set_text(file_path)
     dialog.Open.click()
 
-    LandingPage_Url_input = driver.find_element(By.ID, "creative_clickThroughUrl")
-    LandingPage_Url_input.send_keys("https://t.cerial.org/663fe16475c8a80001d7a66e?sub1=__CAMPAIGN_ID__&sub2=__CAMPAIGN_NAME__&sub3=__FLIGHT_ID__&sub4=__FLIGHT_NAME__&sub5=__CREATIVE_ID__&sub6=__CREATIVE_NAME__&sub7=__OS__&sub8=__IS_LAT__&ref_id=__CALLBACK_PARAM__")
+    time.sleep(2)
+    Upload_without_crop_btn = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-default")
+    time.sleep(2)
+    driver.execute_script("arguments[0].scrollIntoView(true);", Upload_without_crop_btn[9])
+    time.sleep(2)
+    Upload_without_crop_btn[9].click()
+
+    time.sleep(2)
+    continue_btn = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-primary")
+    continue_btn[2].click()
+    time.sleep(2)
+
+    # Logo_upload_div = driver.find_element(By.ID, "creative_logoUrl")
+    # Logo_upload_div.click()
+
+    # time.sleep(2)
+    # app = Application().connect(title_re="Open")
+    # dialog = app.window(title_re="Open")
+    # file_path = os.path.abspath("./assets/logo/1.png")
+    # dialog.Edit.set_text(file_path)
+    # dialog.Open.click()
+
 
     Submit_btn = driver.find_elements(By.CSS_SELECTOR, "button.ant-btn-primary")
     time.sleep(2)
@@ -278,11 +308,25 @@ def start():
     )
     driver.execute_script("arguments[0].click();", campaign_tag)
     time.sleep(2)
-    for i in range(15):    
-        if(i != 0):
+
+    gender_len = len(order.get('adset', {}).get('gender', None))
+    age_len = len(order.get('adset', {}).get('age', None))
+
+    # for i in range(gender_len * age_len):    
+    #     if(i != 0):
+    #         Campaigns_btn = driver.find_element(By.ID, "rc-tabs-0-tab-campaign")
+    #         Campaigns_btn.click()
+    #     CreateCampaign(i)
+    #     CreateAdset(i)
+    #     CreateAd(i)
+
+    index = 0
+    for g in range (gender_len):
+        if(g != 0):
             Campaigns_btn = driver.find_element(By.ID, "rc-tabs-0-tab-campaign")
             Campaigns_btn.click()
-        CreateCampaign(i)
-        CreateAdset(i)
-        CreateAd(i)
-   
+        for a in range (age_len):
+            CreateCampaign(index)
+            CreateAdset(index, g, a)
+            CreateAd(index)
+        
