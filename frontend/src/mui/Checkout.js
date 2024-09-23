@@ -30,13 +30,13 @@ export default function Checkout() {
   const checkoutTheme = createTheme(getCheckoutTheme(mode));
   const defaultTheme = createTheme({ palette: { mode } });
   const [activeStep, setActiveStep] = React.useState(0);
-
+  
   const [formData, setFormData] = useState({
     campaign: {},
     adset: {},
     ad: {}
   });
-
+  
   const updateSectionData = (section, data) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -59,14 +59,17 @@ export default function Checkout() {
   };
 
   const submmitFormData = async (event) => {
+    console.log(formData.ad.imageS)
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/ad/", formData, {
+      await axios.post("http://127.0.0.1:8000/ad/", formData, {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // Use JSON content type
         },
       });
-      console.log('Response:', response.data);
+      // console.log('Response:', response.data);
+      // console.log(formData)
+      
     } catch (error) {
       console.error('Error posting data:', error);
     }
@@ -105,6 +108,15 @@ export default function Checkout() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const handleBackFirst = () => {
+    setActiveStep(activeStep - 3);
+    setFormData({
+      campaign: {},
+      adset: {},
+      ad: {}
+    });
+  };
+  
   return (
     <TemplateFrame
       toggleCustomTheme={toggleCustomTheme}
@@ -228,15 +240,14 @@ export default function Checkout() {
                   <Typography variant="h1">📦</Typography>
                   <Typography variant="h5">Thank you for your order!</Typography>
                   <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                    Your order number is
-                    <strong>&nbsp;#140396</strong>. We have emailed your order
-                    confirmation and will update you once its shipped.
+                  Your ad has been successfully created!
                   </Typography>
                   <Button
                     variant="contained"
                     sx={{ alignSelf: 'start', width: { xs: '100%', sm: 'auto' } }}
+                    onClick={handleBackFirst}
                   >
-                    Go to my orders
+                    Go to first step
                   </Button>
                 </Stack>
               ) : (
