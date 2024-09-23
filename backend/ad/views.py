@@ -321,13 +321,14 @@ def start():
 
     index = 0
     for g in range (gender_len):
-        if(g != 0):
-            time.sleep(3)
-            print("New")
-            Campaigns_btn = driver.find_element(By.ID, "rc-tabs-0-tab-campaign")
-            Campaigns_btn.click()
         for a in range (age_len):
+            if(index != 0):
+                time.sleep(3)
+                print("New")
+                Campaigns_btn = driver.find_element(By.ID, "rc-tabs-0-tab-campaign")
+                Campaigns_btn.click()
             CreateCampaign(index)
             CreateAdset(index, g, a)
             CreateAd(index)
+            index += 1
         
