@@ -27,15 +27,17 @@ def Ad(request):
 
 gender_flag = -1
 age_flag = 0
+driver = None
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--lang=en")
-# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options) 
-chrome_install = ChromeDriverManager().install()
 
-folder = os.path.dirname(chrome_install)
-chromedriver_path = os.path.join(folder, "chromedriver.exe")
-driver = webdriver.Chrome(service = Service(chromedriver_path), options=chrome_options) 
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument("--lang=en")
+# # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options) 
+# chrome_install = ChromeDriverManager().install()
+
+# folder = os.path.dirname(chrome_install)
+# chromedriver_path = os.path.join(folder, "chromedriver.exe")
+# driver = webdriver.Chrome(service = Service(chromedriver_path), options=chrome_options) 
 
 def checkNum(num):
     return str(num).zfill(2)
@@ -231,7 +233,16 @@ def CreateAd(num):
     time.sleep(10)
 
 def start():
-        
+    global driver
+    if driver is None:  # Only create the driver if it hasn't been created yet
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--lang=en")
+
+        chrome_install = ChromeDriverManager().install()
+        folder = os.path.dirname(chrome_install)
+        chromedriver_path = os.path.join(folder, "chromedriver.exe")
+        driver = webdriver.Chrome(service=Service(chromedriver_path), options=chrome_options)
+
     filename = 'settings.txt'
     settings = read_variables(filename)
 
