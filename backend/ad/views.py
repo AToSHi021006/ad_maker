@@ -15,6 +15,9 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.keys import Keys
 
 order = {}
+gender_flag = -1
+age_flag = 0
+driver = None
 
 @api_view(['POST'])
 def Ad(request):
@@ -23,10 +26,6 @@ def Ad(request):
     order = response_data
     start()
     return Response(response_data)
-
-gender_flag = -1
-age_flag = 0
-driver = None
 
 def checkNum(num):
     return str(num).zfill(2)
@@ -49,7 +48,7 @@ def CreateCampaign(num):
 
     campaign_name_input = driver.find_element(By.ID, "name")
     campaign_name = order.get('campaign', {}).get('campaignName', 'Default Campaign Name')
-    campaign_name_str = campaign_name + checkNum(num + 1)
+    campaign_name_str = campaign_name + "_" + checkNum(num + 1)
     campaign_name_input.send_keys(campaign_name_str)
 
     Save_next = WebDriverWait(driver, 10).until(
@@ -68,7 +67,7 @@ def CreateAdset(num, g, a):
             )
             time.sleep(2)
             ad_set_name = order.get('adset', {}).get('adsetName', 'Default Campaign Name')
-            ad_set_name_str = ad_set_name + checkNum(num+1)
+            ad_set_name_str = ad_set_name + "_" + checkNum(num+1)
 
             # ad_set_name_input.send_keys(" ") 
             # ad_set_name_input.send_keys(Keys.BACKSPACE)  
@@ -327,6 +326,7 @@ def start():
                 print("New")
                 Campaigns_btn = driver.find_element(By.ID, "rc-tabs-0-tab-campaign")
                 Campaigns_btn.click()
+                time.sleep(5)
             CreateCampaign(index)
             CreateAdset(index, g, a)
             CreateAd(index)
