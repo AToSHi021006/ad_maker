@@ -1,64 +1,44 @@
 import * as React from 'react';
 
-import { useState } from 'react';
+// import { useState } from 'react';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid2';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { styled } from '@mui/system';
+import { useState, useEffect } from 'react'
 
 const FormGrid = styled(Grid)(() => ({
   display: 'flex',
   flexDirection: 'column',
 }));
 
-export default function Campaigns() {
-  const [CampaignName, setCampaignName] = useState('');
+export default function Campaigns({ campaignData, updateData  }) {
 
-  // Handle input change
-  const handleInputChange = (event) => {
-    setCampaignName(event.target.value);
-  };
+  const [localData, setLocalData] = useState(campaignData);
 
-  // Handle form submission
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the default form submission
+  useEffect(() => { updateData(localData); }, [localData, updateData]);
 
-    try {
-      const response = await fetch('http://localhost:8000/api/campaigns/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: CampaignName }), // Send the campaign name
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      console.log('Success:', data); // Handle success (e.g., show a message, redirect, etc.)
-    } catch (error) {
-      console.error('Error:', error); // Handle error
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLocalData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <Grid container spacing={3}>
       <FormGrid size={{ xs: 12}}>
-        <FormLabel htmlFor="first-name" required>
+        <FormLabel htmlFor="campaignName" required>
           Name
         </FormLabel>
         <OutlinedInput
-          id="campaign-name"
-          name="campaign-name"
+          id="campaignName"
+          name="campaignName"
           type="name"
           placeholder="Name this campaign"
           autoComplete="campaign name"
           required
           size="small"
-          value={CampaignName} // Bind the input value to state
-          onChange={handleInputChange} // Upadate state on input change
+          value={localData.campaignName || ""} // Bind the input value to state
+          onChange={handleChange} // Upadate state on input change
         />
       </FormGrid>
     </Grid>

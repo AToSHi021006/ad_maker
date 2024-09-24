@@ -17,29 +17,68 @@ import AdSets from './components/AdSets';
 import Ads from './components/Ads';
 import SitemarkIcon from './components/SitemarkIcon';
 import TemplateFrame from './TemplateFrame';
+import axios from 'axios'
+import { useState } from 'react'
 
-const steps = ['Campaigns', 'Ad sets', 'Ads'];
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <Campaigns />;
-    case 1:
-      return <AdSets />;
-    case 2:
-      return <Ads />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+// axios.defaults.baseURL = baseUrl
+axios.defaults.baseURL = baseUrl;
+
 export default function Checkout() {
   const [mode, setMode] = React.useState('light');
   const [showCustomTheme, setShowCustomTheme] = React.useState(true);
   const checkoutTheme = createTheme(getCheckoutTheme(mode));
   const defaultTheme = createTheme({ palette: { mode } });
   const [activeStep, setActiveStep] = React.useState(0);
+  
+  const [formData, setFormData] = useState({
+    campaign: {},
+    adset: {},
+    ad: {}
+  });
+  
+  const updateSectionData = (section, data) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [section]: data
+    }));
+  };
+
+  const steps = ['Campaigns', 'Ad sets', 'Ads'];
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return <Campaigns campaignData={formData.campaign} updateData={(data) => updateSectionData("campaign", data)} />;
+      case 1:
+        return <AdSets adsetData={formData.adset} updateData={(data) => updateSectionData("adset", data)} />;
+      case 2:
+        return <Ads adData={formData.ad} updateData={(data) => updateSectionData("ad", data)} />;
+      default:
+        throw new Error("Unknown step");
+    }
+  };
+
+  const submmitFormData = async (event) => {
+    console.log(formData.ad.imageS)
+
+    try {
+      await axios.post("http://127.0.0.1:8000/ad/", formData, {
+        headers: {
+          'Content-Type': 'application/json', // Use JSON content type
+        },
+      });
+      // console.log('Response:', response.data);
+      // console.log(formData)
+      
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
+  }
+
   // This code only runs on the client side, to determine the system color preference
   React.useEffect(() => {
     // Check if there is a preferred mode in localStorage
+
     const savedMode = localStorage.getItem('themeMode');
     if (savedMode) {
       setMode(savedMode);
@@ -62,10 +101,22 @@ export default function Checkout() {
   };
   const handleNext = () => {
     setActiveStep(activeStep + 1);
+
+    if(activeStep === 2)
+      submmitFormData()
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const handleBackFirst = () => {
+    setActiveStep(activeStep - 3);
+    setFormData({
+      campaign: {},
+      adset: {},
+      ad: {}
+    });
+  };
+  
   return (
     <TemplateFrame
       toggleCustomTheme={toggleCustomTheme}
@@ -142,7 +193,7 @@ export default function Checkout() {
                 >
                   {steps.map((label) => (
                     <Step
-                      sx={{ ':first-child': { pl: 0 }, ':last-child': { pr: 0 } }}
+                      sx={{ ':first-of-type': { pl: 0 }, ':last-child': { pr: 0 } }}
                       key={label}
                     >
                       <StepLabel>{label}</StepLabel>
@@ -170,7 +221,7 @@ export default function Checkout() {
                 {steps.map((label) => (
                   <Step
                     sx={{
-                      ':first-child': { pl: 0 },
+                      ':first-of-type': { pl: 0 },
                       ':last-child': { pr: 0 },
                       '& .MuiStepConnector-root': { top: { xs: 6, sm: 12 } },
                     }}
@@ -189,15 +240,14 @@ export default function Checkout() {
                   <Typography variant="h1">📦</Typography>
                   <Typography variant="h5">Thank you for your order!</Typography>
                   <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                    Your order number is
-                    <strong>&nbsp;#140396</strong>. We have emailed your order
-                    confirmation and will update you once its shipped.
+                  Your ad has been successfully created!
                   </Typography>
                   <Button
                     variant="contained"
                     sx={{ alignSelf: 'start', width: { xs: '100%', sm: 'auto' } }}
+                    onClick={handleBackFirst}
                   >
-                    Go to my orders
+                    Go to first step
                   </Button>
                 </Stack>
               ) : (
